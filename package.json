@@ -1,0 +1,10 @@
+{
+  "name": "presentation-karaoke",
+  "version": "1.0.0",
+  "main": "index.html",
+  "author": "cm-okaryu <okada.ryuichi@classmethod.jp>",
+  "license": "MIT",
+  "dependencies": {
+    "lit-html": "^1.1.2"
+  }
+}
