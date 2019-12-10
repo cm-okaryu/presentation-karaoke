@@ -1,3 +1,4 @@
+src/images.js
 build/*
 images/*
 !.gitkeep

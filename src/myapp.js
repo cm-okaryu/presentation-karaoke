@@ -1,13 +1,14 @@
 import {html, render} from 'lit-html';
+import {images} from './images.js';
 
-// 画像リソース TODO S3から取得
-let images = ['mig.jpg','gensuru.jpg', 'double_genkidama.jpeg', 'ohashi_bucho.jpg', 'ズルゾロフ.png']
+
 let count;
+let slide;
 
 // 初期化して先頭ページ呼び出し
 const init = () => {
   count = 0;
-  images = shuffleImages(images);
+  slide = shuffleImages(images);
   startApp();
 };
 
@@ -39,7 +40,7 @@ const App = () => {
  }else {
    return template(html`
      ${index()}
-     ${img(images[count])}
+     ${img(slide[count])}
   `);
  }
 };
