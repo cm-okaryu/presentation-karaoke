@@ -1,6 +1,8 @@
 import { html, render } from 'lit-html'
 import { images } from './images.js'
 
+const MAX_SLIDES = 5
+
 let slideIndex
 let slides
 
@@ -34,7 +36,7 @@ const img = src => html`
 
 // プレゼンページ表示
 const slidePage = () => {
-  if (slideIndex > 4) {
+  if (slideIndex => MAX_SLIDES) {
     return template(html`
       <p @click=${init}>終了！！！！</p>
     `)
