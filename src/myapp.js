@@ -20,7 +20,6 @@ const shuffleImages = imgs =>
 
 // 共通テンプレート
 const template = app => html`
-  <h1>Presentation KARAOKE</h1>
   <div>
     ${app}
   </div>
