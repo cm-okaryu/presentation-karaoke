@@ -49,13 +49,10 @@ const renderTitlePage = () => render(titlePage(), document.body)
 
 const renderSlidePage = () => render(slidePage(), document.body)
 
-// カウントダウンを開始してプレゼンページ呼び出し
-const start = () => renderSlidePage()
-
 // 先頭ページ表示
 const titlePage = () =>
   template(html`
-    <p @click=${start}>プレゼン開始！！！！</p>
+    <p @click=${renderSlidePage}>プレゼン開始！！！！</p>
   `)
 
 // 配列をシャッフルする
