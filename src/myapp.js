@@ -3,9 +3,6 @@ import { images } from './images.js'
 
 const MAX_SLIDES = 5
 
-let slideIndex
-let slides
-
 // 配列をシャッフルする
 const shuffleImages = imgs =>
   imgs
@@ -22,7 +19,6 @@ const createStore = initialState => {
       state = { ...state, ...newState }
       renderApp()
     }
-    console.debug('store: slideIndex:', slideIndex)
     return state
   }
 }
@@ -32,23 +28,29 @@ const store = createStore({
   slides: shuffleImages(images),
 })
 
-// 画像のINDEX表示
-const pageInfo = () => html`
-  <div style="text-align: right">
-    ${slideIndex + 1}/5
-  </div>
-`
+const startSlide = () => {
+  store({ slideIndex: 0 })
+}
 
-// プレゼン画像の表示
-const slideImage = src => {
+const nextSlide = () => {
   const { slideIndex } = store()
 
+  store({ slideIndex: slideIndex + 1 })
+}
+
+const backToTitle = () => {
+  store({ slideIndex: undefined })
+}
+
+const slidePage = () => {
+  const { slideIndex, slides } = store()
+
   return html`
-    <div
-      @click=${() => store({ slideIndex: slideIndex + 1 })}
-      style="text-align: center;background: black;"
-    >
-      <img src="./images/${src}" height="600px" />
+    <div style="text-align: right">
+      ${slideIndex + 1}/${MAX_SLIDES}
+    </div>
+    <div @click=${nextSlide} style="text-align: center;background: black;">
+      <img src="./images/${slides[slideIndex]}" height="600px" />
       <div></div>
     </div>
   `
@@ -59,15 +61,15 @@ const page = () => {
 
   if (slideIndex === undefined) {
     return html`
-      <p @click=${() => store({ slideIndex: 0 })}>プレゼン開始！！！！</p>
+      <p @click=${startSlide}>プレゼン開始！！！！</p>
     `
   } else if (slideIndex < MAX_SLIDES) {
     return html`
-      ${pageInfo()} ${slideImage(slides[slideIndex])}
+      ${slidePage()}
     `
   } else {
     return html`
-      <p @click=${() => store({ slideIndex: undefined })}>終了！！！！</p>
+      <p @click=${backToTitle}>終了！！！！</p>
     `
   }
 }
