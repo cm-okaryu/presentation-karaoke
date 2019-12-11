@@ -20,12 +20,6 @@ const pageInfo = () => html`
   </div>
 `
 
-// 配列をインクリメントしてプレゼンページを再描画
-const nextSlideImage = () => {
-  slideIndex++
-  renderSlidePage()
-}
-
 // プレゼン画像の表示
 const slideImage = src => html`
   <div @click=${nextSlideImage} style="text-align: center;background: black;">
@@ -56,6 +50,12 @@ const titlePage = () =>
   template(html`
     <p @click=${renderSlidePage}>プレゼン開始！！！！</p>
   `)
+
+// 配列をインクリメントしてプレゼンページを再描画
+const nextSlideImage = () => {
+  slideIndex++
+  renderSlidePage()
+}
 
 // 配列をシャッフルする
 const shuffleImages = imgs =>
