@@ -45,7 +45,7 @@ const slidePage = () => {
   }
 }
 
-const renderTitlePage = () => render(startPage(), document.body)
+const renderTitlePage = () => render(titlePage(), document.body)
 
 const renderSlidePage = () => render(slidePage(), document.body)
 
@@ -53,7 +53,7 @@ const renderSlidePage = () => render(slidePage(), document.body)
 const start = () => renderSlidePage()
 
 // 先頭ページ表示
-const startPage = () =>
+const titlePage = () =>
   template(html`
     <p @click=${start}>プレゼン開始！！！！</p>
   `)
