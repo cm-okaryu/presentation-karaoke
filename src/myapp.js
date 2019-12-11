@@ -30,7 +30,7 @@ const slideImage = src => html`
 
 // プレゼンページ表示
 const slidePage = () => {
-  if (slideIndex => MAX_SLIDES) {
+  if (slideIndex >= MAX_SLIDES) {
     return template(html`
       <p @click=${init}>終了！！！！</p>
     `)
