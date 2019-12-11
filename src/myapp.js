@@ -21,14 +21,14 @@ const index = () => html`
 `
 
 // 配列をインクリメントしてプレゼンページを再描画
-const nextImg = () => {
+const nextSlideImage = () => {
   slideIndex++
   renderSlidePage()
 }
 
 // プレゼン画像の表示
 const slideImage = src => html`
-  <div @click=${nextImg} style="text-align: center;background: black;">
+  <div @click=${nextSlideImage} style="text-align: center;background: black;">
     <img src="./images/${src}" height="600px" />
     <div></div>
   </div>
