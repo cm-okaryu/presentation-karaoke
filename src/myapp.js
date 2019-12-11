@@ -6,12 +6,31 @@ const MAX_SLIDES = 5
 let slideIndex
 let slides
 
-// 共通テンプレート
-const template = app => html`
-  <div>
-    ${app}
-  </div>
-`
+// 配列をシャッフルする
+const shuffleImages = imgs =>
+  imgs
+    .map(a => [Math.random(), a])
+    .sort((a, b) => a[0] - b[0])
+    .map(a => a[1])
+
+// https://qiita.com/ryohey/items/f9fe94c1952fc761a743
+const createStore = initialState => {
+  let state = initialState
+
+  return newState => {
+    if (newState) {
+      state = { ...state, ...newState }
+      renderApp()
+    }
+    console.debug('store: slideIndex:', slideIndex)
+    return state
+  }
+}
+
+const store = createStore({
+  slideIndex: undefined,
+  slides: shuffleImages(images),
+})
 
 // 画像のINDEX表示
 const pageInfo = () => html`
@@ -21,54 +40,40 @@ const pageInfo = () => html`
 `
 
 // プレゼン画像の表示
-const slideImage = src => html`
-  <div @click=${nextSlideImage} style="text-align: center;background: black;">
-    <img src="./images/${src}" height="600px" />
-    <div></div>
-  </div>
-`
+const slideImage = src => {
+  const { slideIndex } = store()
 
-// プレゼンページ表示
-const slidePage = () => {
-  if (slideIndex >= MAX_SLIDES) {
-    return template(html`
-      <p @click=${init}>終了！！！！</p>
-    `)
-  } else {
-    return template(html`
+  return html`
+    <div
+      @click=${() => store({ slideIndex: slideIndex + 1 })}
+      style="text-align: center;background: black;"
+    >
+      <img src="./images/${src}" height="600px" />
+      <div></div>
+    </div>
+  `
+}
+
+const page = () => {
+  const { slideIndex, slides } = store()
+
+  if (slideIndex === undefined) {
+    return html`
+      <p @click=${() => store({ slideIndex: 0 })}>プレゼン開始！！！！</p>
+    `
+  } else if (slideIndex < MAX_SLIDES) {
+    return html`
       ${pageInfo()} ${slideImage(slides[slideIndex])}
-    `)
+    `
+  } else {
+    return html`
+      <p @click=${() => store({ slideIndex: undefined })}>終了！！！！</p>
+    `
   }
 }
 
-const renderTitlePage = () => render(titlePage(), document.body)
-
-const renderSlidePage = () => render(slidePage(), document.body)
-
-// 先頭ページ表示
-const titlePage = () =>
-  template(html`
-    <p @click=${renderSlidePage}>プレゼン開始！！！！</p>
-  `)
-
-// 配列をインクリメントしてプレゼンページを再描画
-const nextSlideImage = () => {
-  slideIndex++
-  renderSlidePage()
+function renderApp() {
+  return render(page(), document.body)
 }
 
-// 配列をシャッフルする
-const shuffleImages = imgs =>
-  imgs
-    .map(a => [Math.random(), a])
-    .sort((a, b) => a[0] - b[0])
-    .map(a => a[1])
-
-// 初期化して先頭ページ呼び出し
-const init = () => {
-  slideIndex = 0
-  slides = shuffleImages(images)
-  renderTitlePage()
-}
-
-init()
+renderApp()
