@@ -2,3 +2,4 @@ src/images.js
 build/*
 images/*
 !.gitkeep
+node_modules/
