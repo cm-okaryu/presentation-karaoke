@@ -4,10 +4,15 @@
   "main": "index.html",
   "author": "cm-okaryu <okada.ryuichi@classmethod.jp>",
   "license": "MIT",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
+    "create:images.js": "node ./bin/create_images.js"
+  },
   "dependencies": {
     "lit-html": "^1.1.2"
   },
-  "scripts": {
-    "create:images.js": "node ./bin/create_images.js"
+  "devDependencies": {
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1"
   }
 }
