@@ -21,7 +21,7 @@ const index = () => html`
 // 配列をインクリメントしてプレゼンページを再描画
 const nextImg = () => {
   slideIndex++
-  renderApp()
+  renderSlidePage()
 }
 
 // プレゼン画像の表示
@@ -33,7 +33,7 @@ const img = src => html`
 `
 
 // プレゼンページ表示
-const App = () => {
+const slidePage = () => {
   if (slideIndex > 4) {
     return template(html`
       <p @click=${init}>終了！！！！</p>
@@ -45,12 +45,12 @@ const App = () => {
   }
 }
 
-const renderApp = () => render(App(), document.body)
+const renderSlidePage = () => render(slidePage(), document.body)
 
 const startApp = () => render(startPage(), document.body)
 
 // カウントダウンを開始してプレゼンページ呼び出し
-const start = () => renderApp()
+const start = () => renderSlidePage()
 
 // 先頭ページ表示
 const startPage = () =>
