@@ -16,7 +16,11 @@ const createStore = initialState => {
 
   return newState => {
     if (newState) {
-      state = { ...state, ...newState }
+      if (newState.slideIndex === undefined) {
+        state = { ...state, ...newState, slides: shuffleImages(images) }
+      } else {
+        state = { ...state, ...newState }
+      }
       renderApp()
     }
     return state
