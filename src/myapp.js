@@ -45,9 +45,9 @@ const slidePage = () => {
   }
 }
 
-const renderSlidePage = () => render(slidePage(), document.body)
+const renderTitlePage = () => render(startPage(), document.body)
 
-const startApp = () => render(startPage(), document.body)
+const renderSlidePage = () => render(slidePage(), document.body)
 
 // カウントダウンを開始してプレゼンページ呼び出し
 const start = () => renderSlidePage()
@@ -69,7 +69,7 @@ const shuffleImages = imgs =>
 const init = () => {
   slideIndex = 0
   slides = shuffleImages(images)
-  startApp()
+  renderTitlePage()
 }
 
 init()
