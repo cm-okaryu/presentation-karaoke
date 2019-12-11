@@ -14,7 +14,7 @@ const template = app => html`
 `
 
 // 画像のINDEX表示
-const index = () => html`
+const pageInfo = () => html`
   <div style="text-align: right">
     ${slideIndex + 1}/5
   </div>
@@ -42,7 +42,7 @@ const slidePage = () => {
     `)
   } else {
     return template(html`
-      ${index()} ${slideImage(slides[slideIndex])}
+      ${pageInfo()} ${slideImage(slides[slideIndex])}
     `)
   }
 }
