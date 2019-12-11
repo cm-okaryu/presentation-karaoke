@@ -27,7 +27,7 @@ const nextImg = () => {
 }
 
 // プレゼン画像の表示
-const img = src => html`
+const slideImage = src => html`
   <div @click=${nextImg} style="text-align: center;background: black;">
     <img src="./images/${src}" height="600px" />
     <div></div>
@@ -42,7 +42,7 @@ const slidePage = () => {
     `)
   } else {
     return template(html`
-      ${index()} ${img(slides[slideIndex])}
+      ${index()} ${slideImage(slides[slideIndex])}
     `)
   }
 }
