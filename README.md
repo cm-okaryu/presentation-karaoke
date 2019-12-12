@@ -15,25 +15,55 @@
 
 ## 準備
 
-- Node.jsとnpm
+- Node.js
 - [Plymer-cli](https://docs.polymer-jp.org/2.0/docs/tools/polymer-cli)
-- 画像を5枚以上
-  - `project_root/images` 以下に配置してください
+
+### ライブラリーなどのインストール
+
+```bash
+cd ./presentation-karaoke
+npm install --global yarn polymer-cli
+yarn install
+```
+
+### コードフォーマッター
+
+```bash
+npm install --global prettier eslint-plugin-prettier
+```
+
+src/ 以下の *.js ファイル全部にコーディングルールを適用する場合は次を実行します。
+
+```
+yarn format
+```
+
+エディターの prettier の設定をするとファイル保存時に自動で整形してくれるようになります
+
+### ランダムで表示する画像の準備
+
+まず presentation-karaoke/images/ に画像ファイルをたくさん(5枚以上)コピーしておきます。
+
+次のコマンドで画像を取り込みます ( `src/images.js` を作成する)
+
+```bash
+yarn create:images
+```
 
 ## 起動方法
 
-```
-$ cd path/to/project/dir
-$ npm install
-$ npm run create:images
-$ polymer serve
+```bash
+polymer serve
 ```
 
-ブラウザでアクセス
+http://127.0.0.1:8081 にブラウザでアクセス。
 
 ## スクリプト
 
 ### create:images.js
 
-`./images/` 以下に格納した画像のファイル名リストを `./src/images.js` として作成する
+`images/` 以下にある画像ファイルを追加・削除して更新した場合 `./src/images.js` を作り直す必要があります
 
+```bash
+yarn create:images
+```
