@@ -39,7 +39,21 @@ const startSlide = () => {
 const nextSlide = () => {
   const { slideIndex } = store()
 
-  store({ slideIndex: slideIndex + 1 })
+  if (slideIndex < MAX_SLIDES) {
+    store({ slideIndex: slideIndex + 1 })
+  } else {
+    console.error(`Not have next slide. index = ${slideIndex}`);
+  }
+}
+
+const prevSlide = () => {
+  const { slideIndex } = store()
+
+  if (slideIndex > 0){
+    store({ slideIndex: slideIndex - 1 })
+  } else {
+    console.error(`Not have prev slide. index = ${slideIndex}`);
+  }
 }
 
 const backToTitle = () => {
@@ -91,6 +105,21 @@ const page = () => {
 
 function renderApp() {
   return render(page(), document.body)
+}
+
+document.onkeydown = (e) => {
+  const key = e.key
+  switch (e.key) {
+    case "ArrowRight":
+    case "ArrowDown":
+    case "Enter":
+      nextSlide();
+      break;
+    case "ArrowLeft":
+    case "ArrowUp":
+      prevSlide();
+      break;
+  }
 }
 
 renderApp()
