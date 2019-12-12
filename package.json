@@ -5,6 +5,7 @@
   "author": "cm-okaryu <okada.ryuichi@classmethod.jp>",
   "license": "MIT",
   "scripts": {
+    "start": "polymer serve",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
     "create:images.js": "node ./bin/create_images.js"
   },
