@@ -1,7 +1,7 @@
 import { html, render } from 'lit-html'
 import { images } from './images.js'
 
-const MAX_SLIDES = 5
+const MAX_SLIDES = 4 // 5
 
 // 配列をシャッフルする
 const shuffleImages = imgs =>
