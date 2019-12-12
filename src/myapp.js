@@ -48,15 +48,26 @@ const backToTitle = () => {
 
 const slidePage = () => {
   const { slideIndex, slides } = store()
+  const path = `./images/${slides[slideIndex]}`
+  const style = `
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: url("${path}"); 
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  `
+  console.debug('image path:', path)
 
   return html`
-    <div style="text-align: right">
+    <div style="color: white; text-align: right;">
       ${slideIndex + 1}/${MAX_SLIDES}
     </div>
-    <div @click=${nextSlide} style="text-align: center;background: black;">
-      <img src="./images/${slides[slideIndex]}" height="600px" />
-      <div></div>
-    </div>
+    <div @click=${nextSlide} style=${style} />
   `
 }
 
