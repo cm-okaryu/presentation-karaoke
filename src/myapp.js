@@ -1,15 +1,7 @@
 import { html, render } from 'lit-html'
 import { images } from './images.js'
 
-let count
-let slide
-
-// 初期化して先頭ページ呼び出し
-const init = () => {
-  count = 0
-  slide = shuffleImages(images)
-  startApp()
-}
+const MAX_SLIDES = 4 // 5
 
 // 配列をシャッフルする
 const shuffleImages = imgs =>
@@ -18,58 +10,87 @@ const shuffleImages = imgs =>
     .sort((a, b) => a[0] - b[0])
     .map(a => a[1])
 
-// 共通テンプレート
-const template = app => html`
-  <h1>Presentation KARAOKE</h1>
-  <div>
-    ${app}
-  </div>
-`
+// https://qiita.com/ryohey/items/f9fe94c1952fc761a743
+const createStore = initialState => {
+  let state = initialState
 
-// 先頭ページ表示
-const startPage = () =>
-  template(html`
-    <p @click=${start}>プレゼン開始！！！！</p>
-  `)
-
-// カウントダウンを開始してプレゼンページ呼び出し
-const start = () => renderApp()
-
-// プレゼンページ表示
-const App = () => {
-  if (count > 4) {
-    return template(html`
-      <p @click=${init}>終了！！！！</p>
-    `)
-  } else {
-    return template(html`
-      ${index()} ${img(slide[count])}
-    `)
+  return newState => {
+    if (newState) {
+      if (newState.slideIndex === undefined) {
+        state = { ...state, ...newState, slides: shuffleImages(images) }
+      } else {
+        state = { ...state, ...newState }
+      }
+      renderApp()
+    }
+    return state
   }
 }
 
-// 画像のINDEX表示
-const index = () => html`
-  <div style="text-align: right">
-    ${count + 1}/5
-  </div>
-`
-// プレゼン画像の表示
-const img = src => html`
-  <div @click=${nextImg} style="text-align: center;background: black;">
-    <img src="./images/${src}" height="600px" />
-    <div></div>
-  </div>
-`
+const store = createStore({
+  slideIndex: undefined,
+  slides: shuffleImages(images),
+})
 
-// 配列をインクリメントしてプレゼンページを再描画
-const nextImg = () => {
-  count++
-  renderApp()
+const startSlide = () => {
+  store({ slideIndex: 0 })
 }
 
-const renderApp = () => render(App(), document.body)
+const nextSlide = () => {
+  const { slideIndex } = store()
 
-const startApp = () => render(startPage(), document.body)
+  store({ slideIndex: slideIndex + 1 })
+}
 
-init()
+const backToTitle = () => {
+  store({ slideIndex: undefined })
+}
+
+const slidePage = () => {
+  const { slideIndex, slides } = store()
+  const path = `./images/${slides[slideIndex]}`
+  const style = `
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: url("${path}"); 
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  `
+  console.debug('image path:', path)
+
+  return html`
+    <div style="color: white; text-align: right;">
+      ${slideIndex + 1}/${MAX_SLIDES}
+    </div>
+    <div @click=${nextSlide} style=${style} />
+  `
+}
+
+const page = () => {
+  const { slideIndex, slides } = store()
+
+  if (slideIndex === undefined) {
+    return html`
+      <p @click=${startSlide}>プレゼン開始！！！！</p>
+    `
+  } else if (slideIndex < MAX_SLIDES) {
+    return html`
+      ${slidePage()}
+    `
+  } else {
+    return html`
+      <p @click=${backToTitle}>終了！！！！</p>
+    `
+  }
+}
+
+function renderApp() {
+  return render(page(), document.body)
+}
+
+renderApp()
