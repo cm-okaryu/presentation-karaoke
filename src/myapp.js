@@ -1,9 +1,9 @@
 import { html, render } from 'lit-html'
 import { images } from './images.js'
 
-const MAX_SLIDES = 5
+const MAX_SLIDES = 4
 
-// 配列をシャッフルする
+// 配列をシャッフルしてMAX_SLIDES枚返す
 const shuffleImages = imgs => {
   const shuffledImgs = imgs
     .map(a => [Math.random(), a])
@@ -12,20 +12,22 @@ const shuffleImages = imgs => {
       return { path: `./images/${a[1]}`, pageNo: i + 1 }
     })
 
-  // セッションタイトル用画像を0枚目に用意
-  //hoge.unshift('./resources/PPK_first.png')
-  console.debug(shuffledImgs)
-  return shuffledImgs
+  return shuffledImgs.slice(0, MAX_SLIDES)
 }
 
 // https://qiita.com/ryohey/items/f9fe94c1952fc761a743
-const createStore = initialState => {
-  let state = initialState
+const createStore = () => {
+  let state = {}
 
   return newState => {
-    if (newState) {
-      if (newState.slideIndex === undefined) {
-        state = { ...state, ...newState, slides: shuffleImages(images) }
+    if (!state.slides || newState) {
+      if (!state.slides || newState.slideIndex === undefined) {
+        const slides = [
+          { path: './resources/PPK_first.png', first: true },
+          ...shuffleImages(images),
+          { path: './resources/PPK_end.png', last: true },
+        ]
+        state = { ...state, ...newState, slides }
       } else {
         state = { ...state, ...newState }
       }
@@ -35,22 +37,20 @@ const createStore = initialState => {
   }
 }
 
-const store = createStore({
-  slideIndex: undefined,
-  slides: shuffleImages(images),
-})
+const store = createStore()
 
 const startSlide = () => {
   store({ slideIndex: 0 })
 }
 
 const nextSlide = () => {
-  const { slideIndex } = store()
+  const { slideIndex, slides } = store()
 
-  if (slideIndex < MAX_SLIDES) {
+  const slide = slides[slideIndex]
+  if (slide && slide.last === undefined) {
     store({ slideIndex: slideIndex + 1 })
   } else {
-    console.error(`Not have next slide. index = ${slideIndex}`)
+    backToTitle()
   }
 }
 
@@ -60,7 +60,7 @@ const prevSlide = () => {
   if (slideIndex > 0) {
     store({ slideIndex: slideIndex - 1 })
   } else {
-    console.error(`Not have prev slide. index = ${slideIndex}`)
+    console.warn(`Not have prev slide. index = ${slideIndex}`)
   }
 }
 
@@ -89,11 +89,17 @@ const slidePage = () => {
   console.debug('image:', slides[slideIndex])
 
   const path = slides[slideIndex].path
+  const pageNo = slides[slideIndex].pageNo
 
-  return html`
-    <div style="color: white; text-align: right;">
-      ${slideIndex + 1}/${MAX_SLIDES}
+  const pageInfo = html`
+    <div
+      style="color: white; text-align: right; position: relative; z-index: 100;"
+    >
+      ${pageNo}/${MAX_SLIDES}
     </div>
+  `
+  return html`
+    ${pageNo && pageInfo}
     <div @click=${nextSlide} style=${slideStyle(path)} />
   `
 }
@@ -108,16 +114,9 @@ const page = () => {
         style=${slideStyle('./resources/PPK_titleback.png')}
       />
     `
-  } else if (slideIndex < MAX_SLIDES) {
-    return html`
-      ${slidePage()}
-    `
   } else {
     return html`
-      <div
-        @click=${backToTitle}
-        style=${slideStyle('./resources/PPK_end.png')}
-      />
+      ${slidePage()}
     `
   }
 }
