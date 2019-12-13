@@ -107,7 +107,7 @@ function renderApp() {
   return render(page(), document.body)
 }
 
-document.onkeydown = (e) => {
+document.addEventListener('keydown', (e) => {
   const key = e.key
   switch (e.key) {
     case "ArrowRight":
@@ -120,6 +120,6 @@ document.onkeydown = (e) => {
       prevSlide();
       break;
   }
-}
+})
 
 renderApp()
