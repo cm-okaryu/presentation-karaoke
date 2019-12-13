@@ -1,23 +1,33 @@
 import { html, render } from 'lit-html'
 import { images } from './images.js'
 
-const MAX_SLIDES = 4 // 5
+const MAX_SLIDES = 4
 
-// 配列をシャッフルする
-const shuffleImages = imgs =>
-  imgs
+// 配列をシャッフルしてMAX_SLIDES枚返す
+const shuffleImages = imgs => {
+  const shuffledImgs = imgs
     .map(a => [Math.random(), a])
     .sort((a, b) => a[0] - b[0])
-    .map(a => a[1])
+    .map((a, i) => {
+      return { path: `./images/${a[1]}`, pageNo: i + 1 }
+    })
+
+  return shuffledImgs.slice(0, MAX_SLIDES)
+}
 
 // https://qiita.com/ryohey/items/f9fe94c1952fc761a743
-const createStore = initialState => {
-  let state = initialState
+const createStore = () => {
+  let state = {}
 
   return newState => {
-    if (newState) {
-      if (newState.slideIndex === undefined) {
-        state = { ...state, ...newState, slides: shuffleImages(images) }
+    if (!state.slides || newState) {
+      if (!state.slides || newState.slideIndex === undefined) {
+        const slides = [
+          { path: './resources/PPK_first.png', first: true },
+          ...shuffleImages(images),
+          { path: './resources/PPK_end.png', last: true },
+        ]
+        state = { ...state, ...newState, slides }
       } else {
         state = { ...state, ...newState }
       }
@@ -27,32 +37,30 @@ const createStore = initialState => {
   }
 }
 
-const store = createStore({
-  slideIndex: undefined,
-  slides: shuffleImages(images),
-})
+const store = createStore()
 
 const startSlide = () => {
   store({ slideIndex: 0 })
 }
 
 const nextSlide = () => {
-  const { slideIndex } = store()
+  const { slideIndex, slides } = store()
 
-  if (slideIndex < MAX_SLIDES) {
+  const slide = slides[slideIndex]
+  if (slide && slide.last === undefined) {
     store({ slideIndex: slideIndex + 1 })
   } else {
-    console.error(`Not have next slide. index = ${slideIndex}`);
+    backToTitle()
   }
 }
 
 const prevSlide = () => {
   const { slideIndex } = store()
 
-  if (slideIndex > 0){
+  if (slideIndex > 0) {
     store({ slideIndex: slideIndex - 1 })
   } else {
-    console.error(`Not have prev slide. index = ${slideIndex}`);
+    console.warn(`Not have prev slide. index = ${slideIndex}`)
   }
 }
 
@@ -60,10 +68,8 @@ const backToTitle = () => {
   store({ slideIndex: undefined })
 }
 
-const slidePage = () => {
-  const { slideIndex, slides } = store()
-  const path = `./images/${slides[slideIndex]}`
-  const style = `
+const slideStyle = path => {
+  return `
     position: absolute; 
     top: 0;
     left: 0;
@@ -75,13 +81,26 @@ const slidePage = () => {
     background-position: center;
     background-repeat: no-repeat;
   `
-  console.debug('image path:', path)
+}
 
-  return html`
-    <div style="color: white; text-align: right;">
-      ${slideIndex + 1}/${MAX_SLIDES}
+const slidePage = () => {
+  const { slideIndex, slides } = store()
+
+  console.debug('image:', slides[slideIndex])
+
+  const path = slides[slideIndex].path
+  const pageNo = slides[slideIndex].pageNo
+
+  const pageInfo = html`
+    <div
+      style="color: white; text-align: right; position: relative; z-index: 100;"
+    >
+      ${pageNo}/${MAX_SLIDES}
     </div>
-    <div @click=${nextSlide} style=${style} />
+  `
+  return html`
+    ${pageNo && pageInfo}
+    <div @click=${nextSlide} style=${slideStyle(path)} />
   `
 }
 
@@ -90,15 +109,14 @@ const page = () => {
 
   if (slideIndex === undefined) {
     return html`
-      <p @click=${startSlide}>プレゼン開始！！！！</p>
-    `
-  } else if (slideIndex < MAX_SLIDES) {
-    return html`
-      ${slidePage()}
+      <div
+        @click=${startSlide}
+        style=${slideStyle('./resources/PPK_titleback.png')}
+      />
     `
   } else {
     return html`
-      <p @click=${backToTitle}>終了！！！！</p>
+      ${slidePage()}
     `
   }
 }
@@ -107,18 +125,18 @@ function renderApp() {
   return render(page(), document.body)
 }
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
   const key = e.key
   switch (e.key) {
-    case "ArrowRight":
-    case "ArrowDown":
-    case "Enter":
-      nextSlide();
-      break;
-    case "ArrowLeft":
-    case "ArrowUp":
-      prevSlide();
-      break;
+    case 'ArrowRight':
+    case 'ArrowDown':
+    case 'Enter':
+      nextSlide()
+      break
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      prevSlide()
+      break
   }
 })
 
