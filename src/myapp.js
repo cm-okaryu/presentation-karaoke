@@ -84,7 +84,7 @@ const slideStyle = path => {
 const slidePage = () => {
   const { slideIndex, slides } = store()
 
-  console.debug('image path:', slides[slideIndex]);
+  console.debug('image path:', slides[slideIndex])
 
   return html`
     <div style="color: white; text-align: right;">
@@ -122,7 +122,7 @@ function renderApp() {
   return render(page(), document.body)
 }
 
-document.onkeydown = e => {
+document.addEventListener('keydown', e => {
   const key = e.key
   switch (e.key) {
     case 'ArrowRight':
@@ -135,6 +135,6 @@ document.onkeydown = e => {
       prevSlide()
       break
   }
-}
+})
 
 renderApp()
