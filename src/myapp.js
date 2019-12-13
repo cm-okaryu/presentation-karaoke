@@ -50,7 +50,7 @@ const nextSlide = () => {
   if (slide && slide.last === undefined) {
     store({ slideIndex: slideIndex + 1 })
   } else {
-    backToTitle()
+    console.warn(`Not have next slide. index = ${slideIndex}`)
   }
 }
 
@@ -100,7 +100,10 @@ const slidePage = () => {
   `
   return html`
     ${pageNo && pageInfo}
-    <div @click=${nextSlide} style=${slideStyle(path)} />
+    <div
+      @click=${slides[slideIndex].last ? backToTitle : nextSlide}
+      style=${slideStyle(path)}
+    />
   `
 }
 
