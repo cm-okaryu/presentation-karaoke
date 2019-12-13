@@ -5,15 +5,17 @@ const MAX_SLIDES = 5
 
 // 配列をシャッフルする
 const shuffleImages = imgs => {
-  const hoge = imgs
+  const shuffledImgs = imgs
     .map(a => [Math.random(), a])
     .sort((a, b) => a[0] - b[0])
-    .map(a => `./images/${a[1]}`)
+    .map((a, i) => {
+      return { path: `./images/${a[1]}`, pageNo: i + 1 }
+    })
 
   // セッションタイトル用画像を0枚目に用意
-  hoge.unshift('./resources/PPK_first.png')
-  console.debug(hoge)
-  return hoge
+  //hoge.unshift('./resources/PPK_first.png')
+  console.debug(shuffledImgs)
+  return shuffledImgs
 }
 
 // https://qiita.com/ryohey/items/f9fe94c1952fc761a743
@@ -84,13 +86,15 @@ const slideStyle = path => {
 const slidePage = () => {
   const { slideIndex, slides } = store()
 
-  console.debug('image path:', slides[slideIndex])
+  console.debug('image:', slides[slideIndex])
+
+  const path = slides[slideIndex].path
 
   return html`
     <div style="color: white; text-align: right;">
       ${slideIndex + 1}/${MAX_SLIDES}
     </div>
-    <div @click=${nextSlide} style=${slideStyle(slides[slideIndex])} />
+    <div @click=${nextSlide} style=${slideStyle(path)} />
   `
 }
 
