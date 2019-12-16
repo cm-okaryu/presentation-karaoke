@@ -5,6 +5,7 @@
     "src/**.js",
     "manifest/**",
     "images/**",
+    "resources/**",
     "package.json"
   ],
   "extraDependencies": [
